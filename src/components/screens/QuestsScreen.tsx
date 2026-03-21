@@ -3,13 +3,13 @@ import { useState } from "react";
 import { QUESTS, Quest } from "@/lib/data";
 
 const TYPE_COLORS: Record<string, string> = {
-  "In-Person": "var(--accent-2-light)",
-  Digital: "var(--accent-light)",
+  "In-Person": "#B8B8B8",
+  Digital: "#B8B8B8",
   Social: "var(--green-light)",
 };
 const TYPE_TEXT: Record<string, string> = {
-  "In-Person": "var(--accent-2)",
-  Digital: "var(--accent)",
+  "In-Person": "#FAFAFA",
+  Digital: "#FAFAFA",
   Social: "var(--green)",
 };
 
@@ -48,8 +48,8 @@ function QuestRow({
           <span
             className="chip"
             style={{
-              background: "var(--accent-light)",
-              color: "var(--accent)",
+              background: "#B8B8B8",
+              color: "#FAFAFA",
               border: "none",
               fontSize: 10,
             }}
@@ -281,10 +281,9 @@ export default function QuestsScreen() {
           <div className="sheet slide-up" onClick={(e) => e.stopPropagation()}>
             <div
               className="w-8 h-1 rounded-full mx-auto mb-4"
-              style={{ background: "var(--border)" }}
             />
             <div className="flex gap-1.5 mb-3">
-              <span className="chip chip-accent text-xs">
+              <span className="chip text-xs">
                 +{startedQuest.xp} XP{" "}
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
