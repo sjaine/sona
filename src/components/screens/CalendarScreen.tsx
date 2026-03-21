@@ -358,8 +358,6 @@ export default function CalendarScreen() {
           <div className="text-xs font-semibold mt-0.5" style={{ color: "var(--text-tertiary)" }}>March 2026</div>
         </div>
         <div className="flex items-center gap-2">
-          <button className="w-8 h-8 rounded-full flex items-center justify-center pressable" style={{ background: "var(--surface-2)" }}>🔍</button>
-          <button onClick={() => setShowCreate(true)} className="w-8 h-8 rounded-full flex items-center justify-center text-lg font-bold pressable" style={{ background: "var(--text-primary)", color: "white" }}>+</button>
           {/* Segmented */}
           <div className="flex rounded-full p-0.5" style={{ background: "var(--surface-2)" }}>
             {(["calendar","list"] as const).map(v => (
