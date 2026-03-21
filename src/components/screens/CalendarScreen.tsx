@@ -6,6 +6,9 @@ type CalView = "calendar" | "list";
 const MONTH_NAMES = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 const DAY_NAMES = ["S","M","T","W","T","F","S"];
 
+const TEAM_COLOR = "#5B4FE8"; 
+const ORG_COLOR = "#E84A4A"; 
+
 function getDaysInMonth(y: number, m: number) { return new Date(y, m + 1, 0).getDate(); }
 function getFirstDay(y: number, m: number) { return new Date(y, m, 1).getDay(); }
 
@@ -224,7 +227,7 @@ function MonthGrid({ events, selectedDay, onSelectDay, onSelectEvent }: {
               {hasEvents && (
                 <div className="flex gap-0.5 mt-0.5">
                   {(eventsByDay[day!] || []).slice(0,2).map((ev,j) => (
-                    <div key={j} className="w-1.5 h-1.5 rounded-full" style={{ background: ev.scope === "Team" ? "var(--text-primary)" : "var(--text-tertiary)" }} />
+                    <div key={j} className="w-1.5 h-1.5 rounded-full" style={{ background: ev.scope === "Team" ? TEAM_COLOR : ORG_COLOR }} />
                   ))}
                 </div>
               )}
@@ -242,7 +245,7 @@ function MonthGrid({ events, selectedDay, onSelectDay, onSelectEvent }: {
         )}
         {selectedEvents.map(ev => (
           <button key={ev.id} onClick={() => onSelectEvent(ev)} className="w-full px-4 mb-2 text-left pressable">
-            <div className="flex items-start gap-3 py-2.5" style={{ borderLeft: `3px solid ${ev.color}`, paddingLeft: 12 }}>
+            <div className="flex items-start gap-3 py-2.5" style={{ borderLeft: `3px solid ${ev.scope === "Team" ? TEAM_COLOR : ORG_COLOR}`, paddingLeft: 12 }}>
               <div className="flex-1 min-w-0">
                 <div className="flex items-start justify-between gap-2">
                   <div>
@@ -301,7 +304,7 @@ function ListView({ events, onSelectEvent }: { events: CalEvent[]; onSelectEvent
                       <div className="text-base font-bold" style={{ color: "var(--text-primary)" }}>{dayNum}</div>
                       <div className="text-xs" style={{ color: "var(--text-tertiary)" }}>{dayName}</div>
                     </div>
-                    <div className="flex-1 rounded-2xl p-3" style={{ background: "var(--surface)", border: "1px solid var(--border)", borderLeft: `3px solid ${ev.color}` }}>
+                    <div className="flex-1 p-3" style={{ background: "var(--surface)", border: "1px solid var(--border)", borderLeft: `2px solid ${ev.scope === "Team" ? TEAM_COLOR : ORG_COLOR}` }}>
                       <div className="flex items-start justify-between gap-2 mb-1.5">
                         <div>
                           <div className="text-sm font-semibold" style={{ color: "var(--text-primary)" }}>{ev.title}</div>
@@ -383,11 +386,11 @@ export default function CalendarScreen() {
       {/* Legend */}
       <div className="flex items-center gap-4 px-4 py-2 flex-shrink-0" style={{ borderTop: "1px solid var(--border)" }}>
         <div className="flex items-center gap-1.5">
-          <div className="w-2 h-2 rounded-full" style={{ background: "var(--text-primary)" }} />
+        <div className="w-2 h-2 rounded-full" style={{ background: TEAM_COLOR }} />
           <span className="text-xs" style={{ color: "var(--text-tertiary)" }}>Team</span>
         </div>
         <div className="flex items-center gap-1.5">
-          <div className="w-2 h-2 rounded-full" style={{ background: "var(--text-tertiary)" }} />
+        <div className="w-2 h-2 rounded-full" style={{ background: ORG_COLOR }} />
           <span className="text-xs" style={{ color: "var(--text-tertiary)" }}>Organization</span>
         </div>
       </div>

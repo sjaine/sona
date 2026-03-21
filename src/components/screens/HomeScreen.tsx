@@ -388,7 +388,6 @@ export default function HomeScreen({ onTabChange }: Props) {
               +7
             </span>
             <button
-              onClick={() => onTabChange("profile")}
               className="px-4 py-1.5 rounded-full text-xs font-semibold pressable"
               style={{
                 background: "var(--surface)",
