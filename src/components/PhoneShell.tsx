@@ -87,7 +87,6 @@ export default function PhoneShell() {
       style={{
         width: 375,
         height: 812,
-        transform: "scale(0.95)",
         transformOrigin: "top center",
         background: "var(--bg)",
         borderRadius: 44,
