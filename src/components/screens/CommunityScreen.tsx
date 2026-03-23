@@ -68,6 +68,8 @@ export default function CommunityScreen() {
   const [composeText, setComposeText] = useState("");
   const [composeChannel, setComposeChannel] = useState("Food");
   const [composeScope, setComposeScope] = useState<"Public" | "Team">("Team");
+  const [commentingPostId, setCommentingPostId] = useState<string | null>(null);
+  const [commentText, setCommentText] = useState("");
   const [promptAnswer, setPromptAnswer] = useState("");
   const [showReactionPicker, setShowReactionPicker] = useState<string | null>(
     null
@@ -112,12 +114,12 @@ export default function CommunityScreen() {
       reactions: [],
       comments: 0,
       liked: false,
+      commentList: [], // add this
     };
     setPosts((prev) => [newPost, ...prev]);
     setComposeText("");
     setShowCompose(false);
   }
-
   if (view === "dailyActivity") {
     return (
       <div className="flex flex-col h-full">
@@ -591,6 +593,35 @@ export default function CommunityScreen() {
 
             {/* Reactions */}
             <div className="flex items-center gap-2 flex-wrap">
+              {/* Comment button */}
+              <button
+                onClick={() => {
+                  setCommentingPostId(post.id);
+                  setCommentText("");
+                }}
+                className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold pressable flex-shrink-0"
+                style={{
+                  background: "var(--surface-2)",
+                  border: "1px solid var(--border)",
+                  color: "var(--text-secondary)",
+                }}
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="13"
+                  height="13"
+                  viewBox="0 0 24 24"
+                >
+                  <g fill="none">
+                    <path d="m12.593 23.258l-.011.002l-.071.035l-.02.004l-.014-.004l-.071-.035q-.016-.005-.024.005l-.004.01l-.017.428l.005.02l.01.013l.104.074l.015.004l.012-.004l.104-.074l.012-.016l.004-.017l-.017-.427q-.004-.016-.017-.018m.265-.113l-.013.002l-.185.093l-.01.01l-.003.011l.018.43l.005.012l.008.007l.201.093q.019.005.029-.008l.004-.014l-.034-.614q-.005-.018-.02-.022m-.715.002a.02.02 0 0 0-.027.006l-.006.014l-.034.614q.001.018.017.024l.015-.002l.201-.093l.01-.008l.004-.011l.017-.43l-.003-.012l-.01-.01z" />
+                    <path
+                      fill="currentColor"
+                      d="M12 2c5.523 0 10 4.477 10 10s-4.477 10-10 10H4a2 2 0 0 1-2-2v-8C2 6.477 6.477 2 12 2m0 2a8 8 0 0 0-8 8v8h8a8 8 0 1 0 0-16m0 10a1 1 0 0 1 .117 1.993L12 16H9a1 1 0 0 1-.117-1.993L9 14zm3-4a1 1 0 1 1 0 2H9a1 1 0 1 1 0-2z"
+                    />
+                  </g>
+                </svg>
+                {post.comments > 0 ? post.comments : ""}
+              </button>
               {post.reactions.map((r) => (
                 <button
                   key={r.emoji}
@@ -635,36 +666,198 @@ export default function CommunityScreen() {
                 </div>
               )}
             </div>
+            {/* Comment sheet */}
+            {commentingPostId && (
+              <div
+                className="absolute inset-0 z-50 flex flex-col"
+                style={{ background: "var(--surface)" }}
+              >
+                {/* Header */}
+                <div
+                  className="flex items-center justify-between px-4 py-3 flex-shrink-0"
+                  style={{ borderBottom: "1px solid var(--border)" }}
+                >
+                  <button
+                    onClick={() => setCommentingPostId(null)}
+                    className="text-sm font-semibold pressable"
+                    style={{ color: "var(--text-secondary)" }}
+                  >
+                    Cancel
+                  </button>
+                  <span
+                    className="text-sm font-bold"
+                    style={{ color: "var(--text-primary)" }}
+                  >
+                    Reply
+                  </span>
+                  <button
+                    onClick={() => {
+                      if (!commentText.trim()) return;
+                      setPosts((prev) =>
+                        prev.map((p) =>
+                          p.id === commentingPostId
+                            ? {
+                                ...p,
+                                comments: p.comments + 1,
+                                commentList: [
+                                  ...p.commentList,
+                                  {
+                                    id: `c${Date.now()}`,
+                                    author: "Jasmine K.",
+                                    initials: "JK",
+                                    color: "#C8E0F0",
+                                    text: commentText.trim(),
+                                    timeAgo: "now",
+                                  },
+                                ],
+                              }
+                            : p
+                        )
+                      );
+                      setCommentingPostId(null);
+                      setCommentText("");
+                    }}
+                    className="px-4 py-1.5 rounded-full text-sm font-bold pressable"
+                    style={{
+                      background: commentText.trim()
+                        ? "var(--accent)"
+                        : "var(--surface-2)",
+                      color: commentText.trim()
+                        ? "white"
+                        : "var(--text-tertiary)",
+                    }}
+                  >
+                    Post
+                  </button>
+                </div>
+
+                {/* Original post preview */}
+                {(() => {
+                  const original = posts.find((p) => p.id === commentingPostId);
+                  return original ? (
+                    <div
+                      className="px-4 py-3 flex-shrink-0"
+                      style={{
+                        borderBottom: "1px solid var(--border)",
+                        background: "var(--surface-2)",
+                      }}
+                    >
+                      <div className="flex items-center gap-2 mb-1">
+                        <Avatar
+                          initials={original.authorInitials}
+                          color={original.authorColor}
+                          size={20}
+                        />
+                        <span
+                          className="text-xs font-semibold"
+                          style={{ color: "var(--text-primary)" }}
+                        >
+                          {original.author}
+                        </span>
+                        <span
+                          className="text-xs"
+                          style={{ color: "var(--text-tertiary)" }}
+                        >
+                          {original.timeAgo}
+                        </span>
+                      </div>
+                      <p
+                        className="text-xs leading-relaxed"
+                        style={{ color: "var(--text-secondary)" }}
+                      >
+                        {original.content}
+                      </p>
+                    </div>
+                  ) : null;
+                })()}
+
+                {/* Author row */}
+                <div className="flex items-center gap-3 px-4 pt-4 pb-2 flex-shrink-0">
+                  <div
+                    className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0"
+                    style={{ background: "#C8E0F0" }}
+                  >
+                    <span
+                      className="text-xs font-bold"
+                      style={{ color: "var(--text-secondary)" }}
+                    >
+                      JK
+                    </span>
+                  </div>
+                  <span
+                    className="text-sm font-bold"
+                    style={{ color: "var(--text-primary)" }}
+                  >
+                    Jasmine K.
+                  </span>
+                </div>
+
+                {/* Text area */}
+                <div className="flex-1 px-4 overflow-hidden">
+                  <textarea
+                    className="w-full h-full resize-none outline-none text-sm leading-relaxed"
+                    style={{
+                      background: "transparent",
+                      color: "var(--text-primary)",
+                      fontFamily: "inherit",
+                      minHeight: 120,
+                    }}
+                    placeholder="Write a comment..."
+                    value={commentText}
+                    onChange={(e) => setCommentText(e.target.value)}
+                    autoFocus
+                  />
+                </div>
+              </div>
+            )}
 
             {/* Comment preview */}
-            {post.comments > 0 && (
+            {post.commentList.length > 0 && (
               <div
                 className="mt-3 pt-3"
                 style={{ borderTop: "1px solid var(--border)" }}
               >
-                <div className="flex items-start gap-2">
+                {post.commentList.map((c) => (
                   <div
-                    className="w-6 h-6 rounded-full flex-shrink-0"
-                    style={{ background: "var(--surface-2)" }}
-                  />
-                  <div
-                    className="flex-1 px-3 py-2 rounded-xl"
-                    style={{ background: "var(--surface-2)" }}
+                    key={c.id}
+                    className="flex items-start gap-2 mb-2 last:mb-0"
                   >
                     <div
-                      className="text-xs font-semibold"
-                      style={{ color: "var(--text-primary)" }}
+                      className="w-6 h-6 rounded-full flex-shrink-0 flex items-center justify-center text-[9px] font-bold"
+                      style={{
+                        background: c.color,
+                        color: "var(--text-secondary)",
+                      }}
                     >
-                      Bob
+                      {c.initials}
                     </div>
                     <div
-                      className="text-xs"
-                      style={{ color: "var(--text-secondary)" }}
+                      className="flex-1 px-3 py-2 rounded-xl"
+                      style={{ background: "var(--surface-2)" }}
                     >
-                      Wowww congrats :)
+                      <div className="flex items-center justify-between mb-0.5">
+                        <div
+                          className="text-xs font-semibold"
+                          style={{ color: "var(--text-primary)" }}
+                        >
+                          {c.author}
+                        </div>
+                        <div
+                          className="text-[10px]"
+                          style={{ color: "var(--text-tertiary)" }}
+                        >
+                          {c.timeAgo}
+                        </div>
+                      </div>
+                      <div
+                        className="text-xs"
+                        style={{ color: "var(--text-secondary)" }}
+                      >
+                        {c.text}
+                      </div>
                     </div>
                   </div>
-                </div>
+                ))}
               </div>
             )}
           </div>

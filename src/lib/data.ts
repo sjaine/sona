@@ -14,6 +14,15 @@ export interface User {
   openToMentorship: boolean;
 }
 
+export interface Comment {
+  id: string;
+  author: string;
+  initials: string;
+  color: string;
+  text: string;
+  timeAgo: string;
+}
+
 export interface TeamMember {
   name: string;
   initials: string;
@@ -30,6 +39,7 @@ export interface Post {
   reactions: { emoji: string; count: number }[];
   comments: number;
   liked: boolean;
+  commentList: Comment[];
 }
 
 export interface Quest {
@@ -74,6 +84,17 @@ export const FEED_POSTS: Post[] = [
     timeAgo: "now",
     reactions: [{ emoji: "👏", count: 1 }, { emoji: "🔥", count: 3 }, { emoji: "🎉", count: 5 }],
     comments: 1, liked: false,
+    commentList: [
+      {
+        id: "c0",
+        author: "Bob S.",
+        initials: "BS",
+        color: "#DCF5E8",
+        text: "Wowww congrats :)",
+        timeAgo: "now",
+      }
+    ],
+    
   },
   {
     id: "p2", author: "Bob S.", authorRole: "Senior IT Engineer",
@@ -82,6 +103,7 @@ export const FEED_POSTS: Post[] = [
     content: "I just got a new dog! Isn't he cute?",
     image: true, timeAgo: "5 mins ago",
     reactions: [], comments: 0, liked: false,
+    commentList: [],
   },
   {
     id: "p3", author: "Nayeong C.", authorRole: "UX Designer",
@@ -90,6 +112,30 @@ export const FEED_POSTS: Post[] = [
     content: "Found the best ramen near the office — Tantan Noodles 🍜 highly recommend the spicy broth!",
     timeAgo: "1h ago",
     reactions: [{ emoji: "😍", count: 8 }], comments: 3, liked: true,
+    commentList: [
+      {
+        id: "c0",
+        author: "Bob S.",
+        initials: "BS",
+        color: "#DCF5E8",
+        text: "Wowww congrats :)",
+        timeAgo: "now",
+      }, {
+        id: "c0",
+        author: "Francine",
+        initials: "FP",
+        color: "#FFC943",
+        text: "Ayeeee",
+        timeAgo: "now",
+      }, {
+        id: "c0",
+        author: "Hayat",
+        initials: "HG",
+        color: "#39D4B3",
+        text: "I need to go there!",
+        timeAgo: "now",
+      }
+    ],
   },
 ];
 
