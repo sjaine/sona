@@ -65,7 +65,7 @@ export const CURRENT_USER: User = {
   bio: "Donec sagittis leo quis pharetra ornare. Quis accumsan justo. Nullam id arcu tristique, lobortis ligula non, finibus tellus.",
   interests: ["Games", "Food", "etc"],
   level: 10, xp: 30, xpToNext: 90,
-  status: "Focused", openToMentorship: true,
+  status: "Away", openToMentorship: true,
 };
 
 export const TEAM_MEMBERS: TeamMember[] = [
